@@ -1,0 +1,31 @@
+﻿@using HotelSystem.MVC.Models.Reservation
+@model ReservationViewModel
+
+<h2>Редактирай резервация</h2>
+<form asp-action="Edit" asp-route-id="@Model.ReservationId" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="CheckInDate" class="form-label">Настаняване</label>
+        <input asp-for="CheckInDate" class="form-control" type="date" />
+        <span asp-validation-for="CheckInDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CheckOutDate" class="form-label">Напускане</label>
+        <input asp-for="CheckOutDate" class="form-control" type="date" />
+        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Статус</label>
+        <select asp-for="Status" class="form-control">
+            <option value="Confirmed">Confirmed</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Запази</button>
+    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+</form>

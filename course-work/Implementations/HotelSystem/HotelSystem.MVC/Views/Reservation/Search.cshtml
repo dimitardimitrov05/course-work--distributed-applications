@@ -1,0 +1,48 @@
+﻿@using HotelSystem.MVC.Models.Reservation
+@model List<ReservationViewModel>
+
+<h2>Търсене на резервации</h2>
+<form asp-action="Search" method="get">
+    <div class="mb-3">
+        <label class="form-label">Статус</label>
+        <select name="status" class="form-control">
+            <option value="">Всички</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Търси</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Хотел</th>
+                <th>Потребител</th>
+                <th>Настаняване</th>
+                <th>Напускане</th>
+                <th>Статус</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservation in Model)
+            {
+                <tr>
+                    <td>@reservation.HotelName</td>
+                    <td>@reservation.Username</td>
+                    <td>@reservation.CheckInDate.ToShortDateString()</td>
+                    <td>@reservation.CheckOutDate.ToShortDateString()</td>
+                    <td>@reservation.Status</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@reservation.ReservationId" class="btn btn-info btn-sm">Детайли</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

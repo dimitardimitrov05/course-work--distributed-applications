@@ -1,0 +1,43 @@
+﻿@using HotelSystem.MVC.Models.Hotel
+@model List<HotelViewModel>
+
+<h2>Търсене на хотели</h2>
+<form asp-action="Search" method="get">
+    <div class="mb-3">
+        <label class="form-label">Име</label>
+        <input name="name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Град</label>
+        <input name="city" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Търси</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Име</th>
+                <th>Град</th>
+                <th>Рейтинг</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hotel in Model)
+            {
+                <tr>
+                    <td>@hotel.Name</td>
+                    <td>@hotel.City</td>
+                    <td>@hotel.StarRating</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@hotel.HotelId" class="btn btn-info btn-sm">Детайли</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

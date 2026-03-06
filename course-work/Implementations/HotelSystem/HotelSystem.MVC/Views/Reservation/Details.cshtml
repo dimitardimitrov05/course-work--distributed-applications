@@ -1,0 +1,26 @@
+﻿@using HotelSystem.MVC.Models.Reservation
+@model ReservationViewModel
+
+<h2>Резервация</h2>
+<dl class="row">
+    <dt class="col-sm-3">Хотел</dt>
+    <dd class="col-sm-9">@Model.HotelName</dd>
+
+    <dt class="col-sm-3">Потребител</dt>
+    <dd class="col-sm-9">@Model.Username</dd>
+
+    <dt class="col-sm-3">Настаняване</dt>
+    <dd class="col-sm-9">@Model.CheckInDate.ToShortDateString()</dd>
+
+    <dt class="col-sm-3">Напускане</dt>
+    <dd class="col-sm-9">@Model.CheckOutDate.ToShortDateString()</dd>
+
+    <dt class="col-sm-3">Обща цена</dt>
+    <dd class="col-sm-9">@Model.TotalPrice лв.</dd>
+
+    <dt class="col-sm-3">Статус</dt>
+    <dd class="col-sm-9">@Model.Status</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Назад</a>
+<a asp-action="Edit" asp-route-id="@Model.ReservationId" class="btn btn-warning">Редактирай</a>

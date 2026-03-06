@@ -54,15 +54,15 @@ namespace HotelSystem.API.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Search(string? roomType, bool? isAvailable, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Search(int? hotelId, string? roomType, bool? isAvailable, int page = 1, int pageSize = 10)
         {
             var query = _context.Rooms.AsQueryable();
 
+            if (hotelId.HasValue)
+                query = query.Where(r => r.HotelId == hotelId.Value);
+
             if (!string.IsNullOrEmpty(roomType))
                 query = query.Where(r => r.RoomType.Contains(roomType));
-
-            if (isAvailable.HasValue)
-                query = query.Where(r => r.IsAvailable == isAvailable.Value);
 
             var totalItems = await query.CountAsync();
 
@@ -96,7 +96,6 @@ namespace HotelSystem.API.Controllers
                 RoomType = dto.RoomType,
                 PricePerNight = dto.PricePerNight,
                 Capacity = dto.Capacity,
-                IsAvailable = dto.IsAvailable
             };
 
             _context.Rooms.Add(room);
@@ -119,7 +118,6 @@ namespace HotelSystem.API.Controllers
             if (!string.IsNullOrEmpty(dto.RoomType)) room.RoomType = dto.RoomType;
             if (dto.PricePerNight.HasValue) room.PricePerNight = dto.PricePerNight.Value;
             if (dto.Capacity != 0) room.Capacity = dto.Capacity;
-            room.IsAvailable = dto.IsAvailable;
 
             await _context.SaveChangesAsync();
 
@@ -138,6 +136,23 @@ namespace HotelSystem.API.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Стаята е изтрита успешно!");
+        }
+
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailable(DateTime checkIn, DateTime checkOut, int? hotelId)
+        {
+            var query = _context.Rooms
+                .Where(r => !_context.Reservations.Any(res =>
+                           res.RoomId == r.RoomId &&
+                           res.Status != "Cancelled" &&
+                           res.CheckInDate < checkOut &&
+                           res.CheckOutDate > checkIn));
+
+            if (hotelId.HasValue)
+                query = query.Where(r => r.HotelId == hotelId.Value);
+
+            var rooms = await query.ToListAsync();
+            return Ok(rooms);
         }
     }
 }

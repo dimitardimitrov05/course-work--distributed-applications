@@ -1,0 +1,101 @@
+﻿@using HotelSystem.MVC.Models.Reservation
+@model ReservationViewModel
+
+<h2>Добави резервация</h2>
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="CheckInDate" class="form-label">Настаняване</label>
+        <input asp-for="CheckInDate" id="CheckInDate" class="form-control" type="date" />
+        <span asp-validation-for="CheckInDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CheckOutDate" class="form-label">Напускане</label>
+        <input asp-for="CheckOutDate" id="CheckOutDate" class="form-control" type="date" />
+        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Хотел</label>
+        <select id="hotelSelect" class="form-control">
+            <option value="">-- Първо избери дати --</option>
+            @foreach (var hotel in ViewBag.Hotels)
+            {
+                <option value="@hotel.HotelId">@hotel.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Стая</label>
+        <select id="roomSelect" name="RoomId" class="form-control">
+            <option value="">-- Първо избери хотел --</option>
+        </select>
+    </div>
+
+    <p id="totalPrice" class="fw-bold"></p>
+
+    <button type="submit" class="btn btn-primary">Запази</button>
+    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+</form>
+
+@section Scripts {
+    <script>
+        function loadRooms() {
+            var hotelId = document.getElementById('hotelSelect').value;
+            var checkIn = document.getElementById('CheckInDate').value;
+            var checkOut = document.getElementById('CheckOutDate').value;
+            var roomSelect = document.getElementById('roomSelect');
+
+            if (!hotelId || !checkIn || !checkOut) {
+                roomSelect.innerHTML = '<option value="">-- Първо избери дати и хотел --</option>';
+                return;
+            }
+
+            if (new Date(checkOut) <= new Date(checkIn)) {
+                roomSelect.innerHTML = '<option value="">-- Невалидни дати --</option>';
+                return;
+            }
+
+            roomSelect.innerHTML = '<option value="">-- Зарежда се... --</option>';
+
+            fetch(`/Reservation/GetRoomsByHotel?hotelId=${hotelId}&checkIn=${checkIn}&checkOut=${checkOut}`)
+                .then(response => response.json())
+                .then(rooms => {
+                    roomSelect.innerHTML = '<option value="">-- Избери стая --</option>';
+                    if (rooms.length === 0) {
+                        roomSelect.innerHTML = '<option value="">-- Няма свободни стаи --</option>';
+                        return;
+                    }
+                    rooms.forEach(room => {
+                        roomSelect.innerHTML += `<option value="${room.roomId}" data-price="${room.pricePerNight}">${room.roomType} - ${room.pricePerNight} лв.</option>`;
+                    });
+                });
+        }
+
+        function calculateTotal() {
+            var checkIn = document.getElementById('CheckInDate').value;
+            var checkOut = document.getElementById('CheckOutDate').value;
+            var roomSelect = document.getElementById('roomSelect');
+            var selectedOption = roomSelect.options[roomSelect.selectedIndex];
+
+            if (checkIn && checkOut && selectedOption && selectedOption.value) {
+                var price = parseFloat(selectedOption.getAttribute('data-price'));
+                var days = (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24);
+
+                if (days > 0) {
+                    document.getElementById('totalPrice').innerText = 'Обща сума: ' + (days * price).toFixed(2) + ' лв.';
+                }
+            } else {
+                document.getElementById('totalPrice').innerText = '';
+            }
+        }
+
+        document.getElementById('CheckInDate').addEventListener('change', loadRooms);
+        document.getElementById('CheckOutDate').addEventListener('change', loadRooms);
+        document.getElementById('hotelSelect').addEventListener('change', loadRooms);
+        document.getElementById('roomSelect').addEventListener('change', calculateTotal);
+    </script>
+}

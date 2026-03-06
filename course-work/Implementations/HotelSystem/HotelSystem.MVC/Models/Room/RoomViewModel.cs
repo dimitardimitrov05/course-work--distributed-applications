@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HotelSystem.API.DTOs.Room
+namespace HotelSystem.MVC.Models.Room
 {
-    public class RoomCreateDto
+    public class RoomViewModel
     {
+        public int RoomId { get; set; }
+
         [Required]
         public int HotelId { get; set; }
 
@@ -13,9 +15,10 @@ namespace HotelSystem.API.DTOs.Room
 
         [Required]
         [Range(0.01, double.MaxValue)]
-        public decimal PricePerNight { get; set; }
+        public double PricePerNight { get; set; }
 
         public int Capacity { get; set; }
 
+        public string? HotelName { get; set; }
     }
 }

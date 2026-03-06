@@ -140,9 +140,6 @@ namespace HotelSystem.API.Controllers
             if (room == null)
                 return BadRequest("Стаята не съществува!");
 
-            if (!room.IsAvailable)
-                return BadRequest("Стаята не е свободна!");
-
             if (dto.CheckInDate >= dto.CheckOutDate)
                 return BadRequest("Датата на напускане трябва да е след датата на настаняване!");
 
@@ -158,8 +155,6 @@ namespace HotelSystem.API.Controllers
                 TotalPrice = totalPrice,
                 Status = "Confirmed"
             };
-
-            room.IsAvailable = false;
 
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
@@ -204,8 +199,6 @@ namespace HotelSystem.API.Controllers
 
             if (reservation == null)
                 return NotFound("Резервацията не е намерена!");
-
-            reservation.Room.IsAvailable = true;
 
             _context.Reservations.Remove(reservation);
             await _context.SaveChangesAsync();

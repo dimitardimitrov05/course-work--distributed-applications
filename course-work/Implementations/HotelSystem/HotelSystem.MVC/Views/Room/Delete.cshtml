@@ -1,0 +1,10 @@
+﻿@using HotelSystem.MVC.Models.Room
+@model RoomViewModel
+
+<h2>Изтрий стая</h2>
+<p>Сигурен ли си че искаш да изтриеш стая <strong>@Model.RoomType - @Model.PricePerNight лв.</strong>?</p>
+
+<form asp-action="Delete" asp-route-id="@Model.RoomId" method="post">
+    <button type="submit" class="btn btn-danger">Изтрий</button>
+    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+</form>

@@ -1,0 +1,18 @@
+﻿@using HotelSystem.MVC.Models.Room
+@model RoomViewModel
+
+<dl class="row">
+    <dt class="col-sm-3">Тип</dt>
+    <dd class="col-sm-9">@Model.RoomType</dd>
+
+    <dt class="col-sm-3">Цена на нощ</dt>
+    <dd class="col-sm-9">@Model.PricePerNight лв.</dd>
+
+    <dt class="col-sm-3">Капацитет</dt>
+    <dd class="col-sm-9">@Model.Capacity</dd>
+
+    <dt class="col-sm-3">Свободна</dt>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Назад</a>
+<a asp-action="Edit" asp-route-id="@Model.RoomId" class="btn btn-warning">Редактирай</a>

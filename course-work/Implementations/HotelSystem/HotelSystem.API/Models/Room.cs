@@ -20,8 +20,6 @@ namespace HotelSystem.API.Models
         [Required]
         public int Capacity { get; set; }
 
-        public bool IsAvailable { get; set; } = true;
-
         public Hotel Hotel { get; set; }
 
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();

@@ -8,6 +8,11 @@ namespace HotelSystem.MVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSession();
+            builder.Services.AddHttpClient("HotelAPI", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7218/");
+            });
 
             var app = builder.Build();
 
@@ -26,9 +31,11 @@ namespace HotelSystem.MVC
 
             app.UseAuthorization();
 
+            app.UseSession();
+
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+    name: "default",
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }
